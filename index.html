@@ -583,3 +583,589 @@ ${r.answer}
 </div>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BugSmash</title>
+
+<style>
+body {
+  font-family: 'Orbitron', 'Consolas', monospace;
+  background: #0a0f0d;
+  color: #00ffae;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+header {
+  background: none;
+  color: #00ffae;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-top: 40px;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 20px #00ffae, 0 0 40px #00ffae;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+.box {
+  background: rgba(20, 40, 30, 0.85);
+  border: 2px solid #00ffae;
+  border-radius: 18px;
+  box-shadow: 0 0 40px #00ffae44, 0 0 8px #00ffae;
+  padding: 32px 40px;
+  max-width: 600px;
+  margin: 32px auto;
+  color: #00ffae;
+}
+input, select, textarea, button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 18px;
+  font-size: 1.1rem;
+  background: #0a0f0d;
+  color: #00ffae;
+  border: 2px solid #00ffae;
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 0 8px #00ffae44;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #00ffae;
+  box-shadow: 0 0 16px #00ffae;
+}
+textarea {
+  height: 130px;
+  font-family: 'Fira Mono', monospace;
+}
+pre {
+  background: #0a0f0d;
+  color: #00ffae;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 0 8px #00ffae44;
+  overflow-x: auto;
+}
+button {
+  background: #00ffae;
+  color: #0a0f0d;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 0 16px #00ffae;
+  margin-top: 24px;
+  transition: background 0.2s, color 0.2s;
+}
+button:hover {
+  background: #0a0f0d;
+  color: #00ffae;
+  border: 2px solid #00ffae;
+}
+.timer {
+  position: fixed;
+  top: 16px;
+  right: 32px;
+  color: #00ffae;
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-shadow: 0 0 8px #00ffae;
+}
+.hidden { display: none; }
+.admin { background: rgba(20, 40, 30, 0.95); }
+.neon-title {
+  font-size: 2.2rem;
+  color: #00ffae;
+  text-shadow: 0 0 20px #00ffae, 0 0 40px #00ffae;
+  margin-bottom: 24px;
+}
+.neon-label {
+  color: #00ffae;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+}
+.neon-desc {
+  color: #00ffae;
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+}
+.neon-challenge {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.neon-challenge span {
+  background: #0a0f0d;
+  border: 2px solid #00ffae;
+  color: #00ffae;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 0 8px #00ffae44;
+}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Fira+Mono:wght@500&display=swap');
+</style>
+
+<script>
+/* ================= CONFIG ================= */
+const ADMIN_KEY = "ADMIN@FAANG";
+const TOTAL_TIME = 1800;
+
+/* GOOGLE SHEET */
+const SHEET_URL =
+"https://script.google.com/macros/s/AKfycbySbndBb7V5RgcQorbE2ISK2mYUk5RM1mix9mVmJf09HcAy0YW0Aks6ddXVMqDCPQ8X/exec";
+/* ================= GLOBAL ================= */
+let qIndex = 0;
+let responses = [];
+let candidate = {};
+
+/* ================= QUESTIONS ================= */
+let questions = [
+
+/* Q1 */
+{
+ title:"Count Element Frequency",
+ test:`Input:
+7
+4 5 4 6 5 4 6
+
+Expected Output:
+4 3
+5 2
+6 2`,
+
+ code:{
+  c:`for(int i=0;i<n;i++){
+ int count=0;
+ for(int j=0;j<n;j++)
+  if(arr[i]==arr[j]) count++;
+ printf("%d %d\\n",arr[i],count);
+}`,
+
+  cpp:`for(int i=0;i<n;i++){
+ int count=0;
+ for(int j=0;j<n;j++)
+  if(arr[i]==arr[j]) count++;
+ cout<<arr[i]<<" "<<count<<endl;
+}`,
+
+  java:`for(int i=0;i<n;i++){
+ int count=0;
+ for(int j=0;j<n;j++)
+  if(arr[i]==arr[j]) count++;
+ System.out.println(arr[i]+" "+count);
+}`,
+
+  javascript:`for(let i=0;i<n;i++){
+ let count=0;
+ for(let j=0;j<n;j++)
+  if(arr[i]===arr[j]) count++;
+ console.log(arr[i],count);
+}`,
+
+  python:`for i in range(len(arr)):
+ count=0
+ for j in range(len(arr)):
+  if arr[i]==arr[j]:
+   count+=1
+ print(arr[i],count)`
+ },
+
+ keywords:["duplicate","visited","hash","map","frequency"]
+},
+
+/* Q2 */
+{
+ title:"Factorial Calculation Error",
+ test:`Input:
+20
+
+Expected Output:
+2432902008176640000`,
+
+ code:{
+  c:`int fact=1;
+for(int i=1;i<=n;i++)
+ fact*=i;
+printf("%d",fact);`,
+
+  cpp:`int fact=1;
+for(int i=1;i<=n;i++)
+ fact*=i;
+cout<<fact;`,
+
+  java:`int fact=1;
+for(int i=1;i<=n;i++)
+ fact*=i;
+System.out.println(fact);`,
+
+  javascript:`let fact=1;
+for(let i=1;i<=n;i++)
+ fact*=i;
+console.log(fact);`,
+
+  python:`fact=1
+for i in range(1,n+1):
+ fact*=i
+print(fact)`
+ },
+
+ keywords:["overflow","long","long long","biginteger","datatype"]
+},
+
+/* Q3 */
+{
+ title:"Palindrome Check",
+ test:`Input:
+A man, a plan, a canal: Panama
+
+Expected Output:
+Palindrome`,
+
+ code:{
+  c:`int l=0,r=strlen(s)-1;
+while(l<r){
+ if(s[l]!=s[r]){
+  printf("Not Palindrome");
+  return;
+ }
+ l++; r--;
+}
+printf("Palindrome");`,
+
+  cpp:`int l=0,r=s.length()-1;
+while(l<r){
+ if(s[l]!=s[r]){
+  cout<<"Not Palindrome";
+  return 0;
+ }
+ l++; r--;
+}
+cout<<"Palindrome";`,
+
+  java:`int l=0,r=s.length()-1;
+while(l<r){
+ if(s.charAt(l)!=s.charAt(r)){
+  System.out.println("Not Palindrome");
+  return;
+ }
+ l++; r--;
+}
+System.out.println("Palindrome");`,
+
+  javascript:`let l=0,r=s.length-1;
+while(l<r){
+ if(s[l]!==s[r]){
+  console.log("Not Palindrome");
+  return;
+ }
+ l++; r--;
+}
+console.log("Palindrome");`,
+
+  python:`l=0
+r=len(s)-1
+while l<r:
+ if s[l]!=s[r]:
+  print("Not Palindrome")
+  break
+ l+=1; r-=1
+else:
+ print("Palindrome")`
+ },
+
+ keywords:["ignore","space","case","lower","alphanumeric"]
+},
+
+/* Q4 */
+{
+ title:"Subarray Sum Check",
+ test:`Input:
+5 3
+1 -1 2 3 -2
+
+Expected Output:
+Yes`,
+
+ code:{
+  c:`int sum=0;
+for(int i=0;i<n;i++){
+ sum+=arr[i];
+ if(sum==k){
+  printf("Yes");
+  return;
+ }
+}
+printf("No");`,
+
+  cpp:`int sum=0;
+for(int i=0;i<n;i++){
+ sum+=arr[i];
+ if(sum==k){
+  cout<<"Yes";
+  return 0;
+ }
+}
+cout<<"No";`,
+
+  java:`int sum=0;
+for(int i=0;i<n;i++){
+ sum+=arr[i];
+ if(sum==k){
+  System.out.println("Yes");
+  return;
+ }
+}
+System.out.println("No");`,
+
+  javascript:`let sum=0;
+for(let i=0;i<n;i++){
+ sum+=arr[i];
+ if(sum===k){
+  console.log("Yes");
+  return;
+ }
+}
+console.log("No");`,
+
+  python:`total=0
+for i in range(len(arr)):
+ total+=arr[i]
+ if total==k:
+  print("Yes")
+  break
+else:
+ print("No")`
+ },
+
+ keywords:["prefix","hash","map","negative","subarray"]
+},
+
+/* Q5 */
+{
+ title:"Missing Substrings",
+ test:`Input:
+abcdef
+3
+
+Expected Output:
+abc
+bcd
+cde
+def`,
+
+ code:{
+  c:`for(int i=0;i<strlen(s)-k;i++){
+ for(int j=i;j<i+k;j++)
+  printf("%c",s[j]);
+ printf("\\n");
+}`,
+
+  cpp:`for(int i=0;i<s.length()-k;i++)
+ cout<<s.substr(i,k)<<endl;`,
+
+  java:`for(int i=0;i<s.length()-k;i++)
+ System.out.println(s.substring(i,i+k));`,
+
+  javascript:`for(let i=0;i<s.length-k;i++)
+ console.log(s.substring(i,i+k));`,
+
+  python:`for i in range(len(s)-k):
+ print(s[i:i+k])`
+ },
+
+ keywords:["boundary","off","condition","loop","<="]
+}
+
+];
+
+/* ================= DOM ================= */
+let collegeInput, teamInput, login, test, info, qTitle, testcase, code, lang, answer, timer;
+let adminLoginBox, adminPanel, adminKey, adminData;
+
+function initializeElements(){
+ collegeInput=document.getElementById("collegeInput");
+ teamInput=document.getElementById("teamInput");
+ login=document.getElementById("login");
+ test=document.getElementById("test");
+ info=document.getElementById("info");
+ qTitle=document.getElementById("qTitle");
+ testcase=document.getElementById("testcase");
+ code=document.getElementById("code");
+ lang=document.getElementById("lang");
+ answer=document.getElementById("answer");
+ timer=document.getElementById("timer");
+ adminLoginBox=document.getElementById("adminLoginBox");
+ adminPanel=document.getElementById("adminPanel");
+ adminKey=document.getElementById("adminKey");
+ adminData=document.getElementById("adminData");
+}
+
+/* ================= TIMER ================= */
+let time = TOTAL_TIME;
+function startTimer(){
+ setInterval(()=>{
+  let m=Math.floor(time/60), s=time%60;
+  timer.innerText=`Time Left: ${m}:${s<10?"0":""}${s}`;
+  if(--time<0) endTest();
+ },1000);
+}
+
+/* ================= LOGIN ================= */
+function startTest(){
+ if(!collegeInput.value||!teamInput.value){
+  alert("College & Team required"); return;
+ }
+ candidate={college:collegeInput.value, team:teamInput.value};
+ login.classList.add("hidden");
+ test.classList.remove("hidden");
+ info.innerText=`${candidate.college} | ${candidate.team}`;
+ startTimer();
+ loadQuestion();
+}
+
+/* ================= QUESTIONS ================= */
+function loadQuestion(){
+ let q=questions[qIndex];
+ qTitle.innerText=`Q${qIndex+1}: ${q.title}`;
+ testcase.innerText=q.test;
+ code.innerText="";
+ lang.value="";
+ answer.value="";
+}
+function loadLang(l){
+ code.innerText=questions[qIndex].code[l];
+}
+
+/* ================= STRICT MARKING ================= */
+function calculateScore(ans,index){
+ let text=ans.toLowerCase();
+ let hits=0;
+ questions[index].keywords.forEach(k=>{
+  if(text.includes(k)) hits++;
+ });
+ if(hits===0) return 0;
+ if(hits<=1) return 4;
+ if(hits<=3) return 7;
+ return 10;
+}
+
+/* ================= NEXT ================= */
+function nextQuestion(){
+ if(!lang.value||!answer.value.trim()){
+  alert("Select language & answer"); return;
+ }
+ responses.push({
+  question:questions[qIndex].title,
+  language:lang.value,
+  answer:answer.value,
+  marks:calculateScore(answer.value,qIndex)
+ });
+ qIndex++;
+ qIndex>=questions.length?endTest():loadQuestion();
+}
+
+/* ================= EXPORT ================= */
+function exportToGoogleSheet(){
+ fetch(SHEET_URL,{
+  method:"POST",
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify({college:candidate.college,team:candidate.team,responses})
+ });
+}
+
+/* ================= END ================= */
+function endTest(){
+ exportToGoogleSheet();
+ test.classList.add("hidden");
+ adminLoginBox.classList.remove("hidden");
+}
+
+/* ================= ADMIN ================= */
+function adminLogin(){
+ if(adminKey.value!==ADMIN_KEY){ alert("Invalid Admin Key"); return; }
+ adminLoginBox.classList.add("hidden");
+ adminPanel.classList.remove("hidden");
+
+ let total=0,out=`College: ${candidate.college}
+Team: ${candidate.team}\n\n`;
+
+ responses.forEach((r,i)=>{
+  total+=r.marks;
+  out+=`Q${i+1}: ${r.question}
+Language: ${r.language}
+Marks: ${r.marks}/10
+
+${r.answer}
+-----------------\n`;
+ });
+
+ out+=`TOTAL SCORE: ${total}/${responses.length*10}`;
+ adminData.innerText=out;
+}
+</script>
+</head>
+
+<body onload="initializeElements()">
+
+<header><h2>BUGSMASH</h2></header>
+<div class="timer" id="timer"></div>
+
+<div class="container">
+
+<div class="box" id="login">
+<h3>Candidate Login</h3>
+<input id="collegeInput" placeholder="College Name">
+<input id="teamInput" placeholder="Team Name">
+<button onclick="startTest()">Start Test</button>
+</div>
+
+<div class="box hidden" id="test">
+<p id="info"></p>
+<h3 id="qTitle"></h3>
+<pre id="testcase"></pre>
+
+<select id="lang" onchange="loadLang(this.value)">
+<option value="">Select Language</option>
+<option value="c">C</option>
+<option value="cpp">C++</option>
+<option value="java">Java</option>
+<option value="javascript">JavaScript</option>
+<option value="python">Python</option>
+</select>
+
+<pre id="code"></pre>
+<textarea id="answer" placeholder="Explain the bug and correct logic clearly..."></textarea>
+<button onclick="nextQuestion()">Next</button>
+</div>
+
+<div class="box hidden admin" id="adminLoginBox">
+<h3>Admin Login</h3>
+<input id="adminKey" placeholder="Admin Key">
+<button onclick="adminLogin()">View Score</button>
+</div>
+
+<div class="box hidden admin" id="adminPanel">
+<h3>Admin Review Panel</h3>
+<pre id="adminData"></pre>
+</div>
+
+</div>
+</body>
+</html>
